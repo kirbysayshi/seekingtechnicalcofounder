@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<style type="text/css">
+article,aside,details,figcaption,figure,footer,header,hgroup,nav,section{display:block;}
+audio[controls],canvas,video{display:inline;zoom:1;}
+html{font-size:100%;overflow-y:scroll;-webkit-tap-highlight-color:rgba(0,0,0,0);-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+body,button,input,select,textarea{font-family:sans-serif;}
+img{border:0;-ms-interpolation-mode:bicubic;}
+a{color:#00e;}
+a:visited{color:#551a8b;}
+a:focus{outline:thin dotted;}
+a:hover,a:active{outline:0;}
+abbr[title]{border-bottom:1px dotted;}
+b,strong{font-weight:700;}
+blockquote{margin:1em 40px;}
+dfn{font-style:italic;}
+mark{background:#ff0;color:#000;}
+pre,code,kbd,samp{font-family:monospace, monospace;_font-family:'courier new', monospace;font-size:1em;}
+pre{white-space:pre-wrap;word-wrap:break-word;}
+q{quotes:none;}
+q:before,q:after{content:none;}
+small{font-size:75%;}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline;}
+sup{top:-.5em;}
+sub{bottom:-.25em;}
+ul,ol{margin:0;padding:0;list-style:none;}
+dd{margin:0;}
+nav ul,nav ol{list-style:none;}
+fieldset{margin:0 2px;padding:.35em .625em .75em;}
+legend{margin-left:-7px;}
+button,input,select,textarea{font-size:100%;vertical-align:middle;margin:0;}
+button,input{line-height:normal;overflow:visible;}
+button,input[type=button],input[type=reset],input[type=submit]{cursor:pointer;-webkit-appearance:button;}
+input[type=checkbox],input[type=radio]{box-sizing:border-box;}
+input[type=search]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box;}
+input[type=search]::-webkit-search-decoration{-webkit-appearance:none;}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0;}
+textarea{overflow:auto;vertical-align:top;}
+table{border-collapse:collapse;border-spacing:0;}
+th,td{text-align:left;vertical-align:middle;padding:0;}
+body,figure,form{margin:0;}
+
+.clearfix:after { content:"."; display:block; height:0; clear:both; visibility:hidden; }
+* html .clearfix { height:1px; }
+.clearfix { display:block; min-width:0; }
+
+body { font-family: Helvetica, Arial, sans-serif; }
+.its-like { width: 85%; margin: 45px auto; font-size: 120px; text-shadow: 1px 1px 1px #cccccc; display: none; }
+.its-like .noun {}
+.its-like .direct-object {}
+.links { text-align: center; }
+.links li { display: inline; }
+	</style>
+	<title>Seeking Technical Cofounder</title>
+</head>
+<body>
+	<div class="its-like">It's like <span class="noun"></span>, but for <span class="direct-object"></span>.</div>
+
+	<ul class="links">
+		<li><a href="index.html">What about...</a></li>
+		<!-- <li><a href=""></a></li> -->
+	</ul>
+
+<script type="text/javascript">
+var 
+	 NOUNS = [ "Kickstarter", "Pinterest", "Facebook", "Tumblr" ]
+	,DIRECTOS = [ "dogs", "cats", "nerds", "geeks", "jocks", "movie stars" ];
+
+;(function(root){
+
+	// From http://baagoe.com/en/RandomMusings/javascript/
+	// Johannes Baagøe <baagoe@baagoe.com>, 2010
+	function Mash() {
+		var  n = 0xefc8249d
+			,mash;
+
+		mash = function(data) {
+			data = data.toString();
+			for (var i = 0; i < data.length; i++) {
+				n += data.charCodeAt(i);
+				var h = 0.02519603282416938 * n;
+				n = h >>> 0;
+				h -= n;
+				h *= n;
+				n = h >>> 0;
+				h -= n;
+				n += h * 0x100000000; // 2^32
+			}
+			return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
+		};
+
+		mash.version = 'Mash 0.9';
+		return mash;
+	}
+
+	// modified, from http://baagoe.com/en/RandomMusings/javascript/
+	root.Alea = function Alea(){
+		// Johannes Baagøe <baagoe@baagoe.com>, 2010
+		var  args = [].slice.call(arguments)
+			,s0 = 0
+			,s1 = 0
+			,s2 = 0
+			,c = 1
+
+			,mash
+			,i
+			,random;
+
+		if (args.length == 0) {
+			args = [+new Date];
+		}
+
+		mash = Mash();
+		s0 = mash(' ');
+		s1 = mash(' ');
+		s2 = mash(' ');
+
+		for (i = 0; i < args.length; i++) {
+			s0 -= mash(args[i]);
+			if (s0 < 0) {
+				s0 += 1;
+			}
+			s1 -= mash(args[i]);
+			if (s1 < 0) {
+				s1 += 1;
+			}
+			s2 -= mash(args[i]);
+			if (s2 < 0) {
+				s2 += 1;
+			}
+		}
+
+		mash = null;
+
+		random = function() {
+			var t = 2091639 * s0 + c * 2.3283064365386963e-10; // 2^-32
+			s0 = s1;
+			s1 = s2;
+			return s2 = t - (c = t | 0);
+		};
+
+		random.uint32 = function() {
+			return random() * 0x100000000; // 2^32
+		};
+
+		random.fract53 = function() {
+			return random() + 
+				(random() * 0x200000 | 0) * 1.1102230246251565e-16; // 2^-53
+		};
+
+		random.version = 'Alea 0.9';
+		random.args = args;
+		return random;
+	}
+
+	// call a constructor with variable arguments
+	// http://stackoverflow.com/questions/1606797/use-of-apply-with-new-operator-is-this-possible/1608546#1608546
+	function construct(constructor, args) {
+		function F() {
+			return constructor.apply(this, args);
+		}
+		F.prototype = constructor.prototype;
+		return new F();
+	}
+
+	root.Dice = function(seed){
+		this.gen = construct(Alea, arguments);
+	}
+
+	root.Dice.prototype = (function make(){
+		var types =  {}
+					,i
+
+		for(i = 2; i <= 100; i++){
+			types['d' + i] = (function(sides){
+				return function(count, separate){
+					count = count || 1;
+
+					var rolls = []
+						,total = 0
+						,i = 0
+						,a;
+
+					for(;i < count; i++){
+						a = ((this.gen()*sides)|0) + 1;
+						total += a;
+						rolls.push(a);
+					}
+
+					return separate === true
+						? rolls
+						: total;
+				}
+			})(i)
+		}
+
+		return types;
+	})();
+
+})(typeof module === 'undefined'
+	? window
+	: exports);
+
+(function(){
+
+var  qs = window.location.search.substring(1)
+	,roller
+	,nounChoice
+	,directoChoice;
+
+if( qs ){
+	roller = new Dice( parseInt(qs, 10) )	
+} else {
+	window.location = '?' + ~~( Math.random() * 1000000000 )
+}
+
+nounRoll = roller['d' + (NOUNS.length - 1)]();
+directoRoll = roller['d' + (DIRECTOS.length - 1)]();
+
+document.addEventListener('DOMContentLoaded', function(){
+
+	var  itslike = document.querySelector('.its-like')
+		,noun = document.querySelector('.its-like .noun')
+		,directo = document.querySelector('.its-like .direct-object')
+
+	console.log( 'Rolled a %d for %s', nounRoll, 'noun' )
+	console.log( 'Rolled a %d for %s', directoRoll, 'directo' )
+
+	noun.textContent = noun.innerText = NOUNS[nounRoll];
+	directo.textContent = directo.innerText = DIRECTOS[directoRoll];
+	itslike.style.display = 'block';
+})
+
+}())
+</script>
+</body>
+</html>
