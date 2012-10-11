@@ -165,15 +165,16 @@ var
 		return new F();
 	}
 
-	root.Dice = function(seed){
+	root.Dice = function(seed, diceCount){
 		this.gen = construct(Alea, arguments);
+		this.diceCount = diceCount || 100;
 	}
 
 	root.Dice.prototype = (function make(){
 		var types =  {}
 					,i
 
-		for(i = 1; i <= 100; i++){
+		for(i = 1; i <= this.diceCount; i++){
 			types['d' + i] = (function(sides){
 				return function(count, separate){
 					count = count || 1;
@@ -243,7 +244,7 @@ var
 		var out = ''
 			,states
 			,word
-			,roller = new Dice( seed || +new Date )
+			,roller = new Dice( seed || +new Date, this.statetab.length )
 			,idx;
 
 		// reset prefix
@@ -251,6 +252,11 @@ var
 
 		for( var i = 0; i < count; i++ ){
 			states = this.statetab[ this.prefix.join('#') ];
+
+			console.log(states.length)
+
+			if( !states.length ) break;
+
 			idx = roller[ 'd' + states.length ]() - 1;
 			word = states[ idx ]
 
@@ -298,6 +304,24 @@ document.addEventListener('DOMContentLoaded', function(){
 	noun.textContent = noun.innerText = NOUNS[nounRoll - 1];
 	directo.textContent = directo.innerText = DIRECTOS[directoRoll - 1];
 	itslike.style.display = 'block';
+
+	var req = new XMLHttpRequest();
+
+	req.open( 'GET', 'sherlock.txt' )
+	req.responseType = 'text';
+
+	req.onreadystatechange = function(){
+		if( req.readyState === 4 ){
+
+			var sherlock = req.response;
+			window.mg = new MarkovGenerator( sherlock, 2 );
+			mg.build();
+			console.log('Markov is ready for your bidding');
+			console.log('Type "mg.generate(25)" to create text 25 words long.')
+		}
+	}
+
+	req.send();
 })
 
 }())
