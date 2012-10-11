@@ -173,7 +173,7 @@ var
 		var types =  {}
 					,i
 
-		for(i = 2; i <= 100; i++){
+		for(i = 1; i <= 100; i++){
 			types['d' + i] = (function(sides){
 				return function(count, separate){
 					count = count || 1;
@@ -203,7 +203,74 @@ var
 	? window
 	: exports);
 
-(function(){
+;(function(exports){
+
+	var MarkovGenerator = exports.MarkovGenerator = function( input, order ){
+
+		this.order = order || 2;
+		this.input = input;
+
+		this.prefix = this.createPrefix( this.order );
+
+		this.statetab = {};
+	}
+
+	MarkovGenerator.prototype.createPrefix = function( order ){
+		var prefix = new Array(order + 1).join(' 0').split('0');
+		prefix.pop();	
+		return prefix;
+	}
+
+	MarkovGenerator.prototype.add = function( word ){
+
+		var key = this.prefix.join('#')
+
+		this.statetab[key] = this.statetab[key] || [];
+		this.statetab[key].push( word );
+
+		this.prefix.shift();
+		this.prefix.push( word );
+	}
+
+	MarkovGenerator.prototype.build = function(){
+		var words = this.input.split(' ')
+
+		words.forEach( this.add.bind(this) );
+		this.add( ' ' );
+	}
+
+	MarkovGenerator.prototype.generate = function( count, seed ){
+		var out = ''
+			,states
+			,word
+			,roller = new Dice( seed || +new Date )
+			,idx;
+
+		// reset prefix
+		this.prefix = this.createPrefix( this.order );
+
+		for( var i = 0; i < count; i++ ){
+			states = this.statetab[ this.prefix.join('#') ];
+			idx = roller[ 'd' + states.length ]() - 1;
+			word = states[ idx ]
+
+			// empty signals premature end of input?
+			if( word === ' ' ) break;
+
+			out += word + ' ';
+			this.prefix.shift();
+			this.prefix.push( word );
+		}	
+
+		return out;
+	}
+
+}(typeof module === 'undefined'
+	? window
+	: exports))
+
+
+;(function(){
 
 var  qs = window.location.search.substring(1)
 	,roller
@@ -216,8 +283,8 @@ if( qs ){
 	window.location = '?' + ~~( Math.random() * 1000000000 )
 }
 
-nounRoll = roller['d' + (NOUNS.length - 1)]();
-directoRoll = roller['d' + (DIRECTOS.length - 1)]();
+nounRoll = roller['d' + NOUNS.length]();
+directoRoll = roller['d' + DIRECTOS.length]();
 
 document.addEventListener('DOMContentLoaded', function(){
 
@@ -228,8 +295,8 @@ document.addEventListener('DOMContentLoaded', function(){
 	console.log( 'Rolled a %d for %s', nounRoll, 'noun' )
 	console.log( 'Rolled a %d for %s', directoRoll, 'directo' )
 
-	noun.textContent = noun.innerText = NOUNS[nounRoll];
-	directo.textContent = directo.innerText = DIRECTOS[directoRoll];
+	noun.textContent = noun.innerText = NOUNS[nounRoll - 1];
+	directo.textContent = directo.innerText = DIRECTOS[directoRoll - 1];
 	itslike.style.display = 'block';
 })
 
