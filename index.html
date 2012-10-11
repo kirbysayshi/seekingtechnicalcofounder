@@ -165,16 +165,15 @@ var
 		return new F();
 	}
 
-	root.Dice = function(seed, diceCount){
+	root.Dice = function(seed){
 		this.gen = construct(Alea, arguments);
-		this.diceCount = diceCount || 100;
 	}
 
 	root.Dice.prototype = (function make(){
 		var types =  {}
 					,i
 
-		for(i = 1; i <= this.diceCount; i++){
+		for(i = 1; i <= 100000; i++){
 			types['d' + i] = (function(sides){
 				return function(count, separate){
 					count = count || 1;
@@ -244,7 +243,7 @@ var
 		var out = ''
 			,states
 			,word
-			,roller = new Dice( seed || +new Date, this.statetab.length )
+			,roller = new Dice( seed || +new Date )
 			,idx;
 
 		// reset prefix
@@ -252,8 +251,6 @@ var
 
 		for( var i = 0; i < count; i++ ){
 			states = this.statetab[ this.prefix.join('#') ];
-
-			console.log(states.length)
 
 			if( !states.length ) break;
 
